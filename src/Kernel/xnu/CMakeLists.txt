@@ -22,6 +22,7 @@ externalproject_add(xnu_headers.extproj
             -D NMEDIT_PATH=$<TARGET_FILE:host_nmedit>
             -D LIBTOOL_PATH=$<TARGET_FILE:host_libtool>
             -D UNIFDEF_PATH=$<TARGET_FILE:unifdef>
+            -D IIG_PATH=$<TARGET_FILE:host_iig>
             -D DSYMUTIL_PATH=${dsymutil_path}
             -P ${CMAKE_CURRENT_SOURCE_DIR}/preprocess_files.cmake
     COMMAND
@@ -35,7 +36,7 @@ externalproject_add(xnu_headers.extproj
 )
 add_dependencies(xnu_headers.extproj host_codesign_allocate
     migcom host_strip host_lipo host_nm unifdef host_nmedit
-    host_ctfconvert host_ctfmerge availability.pl)
+    host_ctfconvert host_ctfmerge availability.pl host_iig)
 
 add_library(xnu_headers INTERFACE)
 add_dependencies(xnu_headers xnu_headers.extproj)
@@ -86,6 +87,7 @@ externalproject_add(xnu
             -D NMEDIT_PATH=$<TARGET_FILE:host_nmedit>
             -D LIBTOOL_PATH=$<TARGET_FILE:host_libtool>
             -D UNIFDEF_PATH=$<TARGET_FILE:unifdef>
+            -D IIG_PATH=$<TARGET_FILE:host_iig>
             -D DSYMUTIL_PATH=${dsymutil_path}
             -D FIREHOSE_KERNEL_LIBRARY_PATH=$<TARGET_FILE:libfirehose_kernel>
             -D FIREHOSE_KERNEL_HEADER_PATH=$<TARGET_PROPERTY:libfirehose_kernel,INTERFACE_INCLUDE_DIRECTORIES>
@@ -103,7 +105,7 @@ externalproject_add(xnu
 add_dependencies(xnu
     xnu_headers libfirehose_kernel host_codesign_allocate host_ctfconvert host_ctfmerge
     migcom host_strip host_lipo host_nm unifdef host_nmedit availability.pl host_ld
-    dyld_availability_headers
+    dyld_availability_headers host_iig
 )
 
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/xnu/System/Library/Frameworks/Kernel.framework/Versions/A/Resources DESTINATION System/Library/Frameworks/Kernel.framework/Versions/A COMPONENT BaseSystem)
