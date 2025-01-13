@@ -2,7 +2,7 @@
 # Copyright (c) 2007-Present The PureDarwin Project.
 # All rights reserved.
 #
-# @LICENSE_HEADER_START@
+# @PUREDARWIN_LICENSE_HEADER_START@
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -25,5 +25,5 @@
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-# @LICENSE_HEADER_END@
+# @PUREDARWIN_LICENSE_HEADER_END@
 #
