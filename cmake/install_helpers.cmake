@@ -7,7 +7,7 @@ function(install_symlink source_path target)
     if(SL_COMPONENT)
         install(CODE "
             execute_process(
-                COMMAND \${CMAKE_COMMAND} -E make_directory \"\$ENV{DESTDIR}/\${CMAKE_INSTALL_PREFIX/${source_dir}\"
+                COMMAND \${CMAKE_COMMAND} -E make_directory \"\$ENV{DESTDIR}/\${CMAKE_INSTALL_PREFIX}/${source_dir}\"
             )
             execute_process(
                 COMMAND \${CMAKE_COMMAND} -E create_symlink \"${target}\" \"${source_name}\"
@@ -18,7 +18,7 @@ function(install_symlink source_path target)
     else()
         install(CODE "
             execute_process(
-                COMMAND \${CMAKE_COMMAND} -E make_directory \"\$ENV{DESTDIR}/\${CMAKE_INSTALL_PREFIX/${source_dir}\"
+                COMMAND \${CMAKE_COMMAND} -E make_directory \"\$ENV{DESTDIR}/\${CMAKE_INSTALL_PREFIX}/${source_dir}\"
             )
             execute_process(
                 COMMAND \${CMAKE_COMMAND} -E create_symlink \"${target}\" \"${source_name}\"
