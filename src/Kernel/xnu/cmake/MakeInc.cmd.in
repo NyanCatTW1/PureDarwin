@@ -171,7 +171,7 @@ ifeq ($(MIGCC),)
 	export MIGCC := $(CC)
 endif
 ifeq ($(IIG),)
-	export IIG := false
+	export IIG := $(shell $(XCRUN) -sdk $(SDKROOT) -find iig)
 endif
 ifeq ($(STRIP),)
 	export STRIP := @STRIP_PATH@
