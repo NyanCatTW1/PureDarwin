@@ -1,8 +1,7 @@
 #pragma once
 
 #include <iostream>
-#include <string>
-#include <vector>
+#include <string.h>
 
 #include <clang-c/Index.h>
 
@@ -16,7 +15,7 @@ inline bool strnequal(const char *s1, const char *s2, size_t n) {
     return strncmp(s1, s2, n) == 0;
 }
 
-inline ostream& operator <<(ostream& stream, CXString string) {
+inline ostream &operator<<(ostream &stream, CXString string) {
     const char *str = clang_getCString(string);
     stream << str;
     return stream;

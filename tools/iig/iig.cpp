@@ -1,19 +1,23 @@
 #include "iig.h"
 
 static void usage(const char *progname) {
-    std::cerr <<
-        "usage: " << progname <<
-        " --def <path/to/input.iig> --header <path/to/header.h> --impl <path/to/source.iig.cpp> -- <clang args>\n"
-        "note: The --edits, --log, --framework-name, and --deployment-target options from Apple iig are not "
-        "implemented and will be ignored" << std::endl;
+    std::cerr
+        << "usage: " << progname
+        << " --def <path/to/input.iig> --header <path/to/header.h> --impl "
+           "<path/to/source.iig.cpp> -- <clang args>\n"
+           "note: The --edits, --log, --framework-name, and "
+           "--deployment-target options from Apple iig are not "
+           "implemented and will be ignored"
+        << std::endl;
 
     exit(1);
 }
 
-int main(int argc, const char * argv[]) {
+int main(int argc, const char *argv[]) {
     int exitCode = 0;
     string inputFilePath, headerOutputPath, implOutputPath;
-    string clangFlags; bool seenDashDash = false;
+    string clangFlags;
+    bool seenDashDash = false;
 
     for (int i = 1; i < argc; i++) {
         if (seenDashDash) {
@@ -21,28 +25,34 @@ int main(int argc, const char * argv[]) {
             clangFlags += " ";
         } else if (strequal(argv[i], "--def")) {
             if (++i == argc) {
-                std::cerr << "iig: error: --def option requires an argument" << std::endl;
+                std::cerr << "iig: error: --def option requires an argument"
+                          << std::endl;
                 usage(argv[0]);
             }
 
             inputFilePath = argv[i];
         } else if (strequal(argv[i], "--header")) {
             if (++i == argc) {
-                std::cerr << "iig: error: --header option requires an argument" << std::endl;
+                std::cerr << "iig: error: --header option requires an argument"
+                          << std::endl;
                 usage(argv[0]);
             }
 
             headerOutputPath = argv[i];
         } else if (strequal(argv[i], "--impl")) {
             if (++i == argc) {
-                std::cerr << "iig: error: --impl option requires an argument" << std::endl;
+                std::cerr << "iig: error: --impl option requires an argument"
+                          << std::endl;
                 usage(argv[0]);
             }
 
             implOutputPath = argv[i];
-        } else if (strequal(argv[i], "--edits") || strequal(argv[i], "--log") || strequal(argv[i], "--framework-name") || strequal(argv[i], "--deployment-target")) {
+        } else if (strequal(argv[i], "--edits") || strequal(argv[i], "--log") ||
+                   strequal(argv[i], "--framework-name") ||
+                   strequal(argv[i], "--deployment-target")) {
             if (++i == argc) {
-                std::cerr << "iig: error: " << argv[i] << " option requires an argument" << std::endl;
+                std::cerr << "iig: error: " << argv[i]
+                          << " option requires an argument" << std::endl;
                 usage(argv[0]);
             }
 
@@ -52,7 +62,8 @@ int main(int argc, const char * argv[]) {
         } else if (strequal(argv[i], "--")) {
             seenDashDash = true;
         } else {
-            std::cerr << "iig: error: unrecognized option: " << argv[i] << std::endl;
+            std::cerr << "iig: error: unrecognized option: " << argv[i]
+                      << std::endl;
             usage(argv[0]);
         }
     }
@@ -61,16 +72,19 @@ int main(int argc, const char * argv[]) {
         std::cerr << "iig: error: input file not specified" << std::endl;
         usage(argv[0]);
     } else if (headerOutputPath.empty()) {
-        std::cerr << "iig: error: output header file not specified" << std::endl;
+        std::cerr << "iig: error: output header file not specified"
+                  << std::endl;
         usage(argv[0]);
     } else if (implOutputPath.empty()) {
-        std::cerr << "iig: error: output source file not specified" << std::endl;
+        std::cerr << "iig: error: output source file not specified"
+                  << std::endl;
         usage(argv[0]);
     }
 
     CXIndex index = clang_createIndex(0, 0);
     const char *clangFlagsStr = clangFlags.c_str();
-    CXTranslationUnit source = clang_createTranslationUnitFromSourceFile(index, inputFilePath.c_str(), 1, &clangFlagsStr, 0, nullptr);
+    CXTranslationUnit source = clang_createTranslationUnitFromSourceFile(
+        index, inputFilePath.c_str(), 1, &clangFlagsStr, 0, nullptr);
 
     size_t num_diags = clang_getNumDiagnostics(source);
     if (num_diags > 0) {
@@ -80,25 +94,26 @@ int main(int argc, const char * argv[]) {
 
             const char *severity = nullptr;
             switch (clang_getDiagnosticSeverity(diag)) {
-                case CXDiagnostic_Fatal:
-                    severity = "fatal error";
-                    break;
-                case CXDiagnostic_Error:
-                    severity = "error";
-                    found_error = true;
-                    break;
-                case CXDiagnostic_Warning:
-                    severity = "warning";
-                    break;
-                case CXDiagnostic_Note:
-                    severity = "note";
-                    break;
-                default:
-                    assertion_failure("unknown CXDiagnosticSeverity");
-                    break;
+            case CXDiagnostic_Fatal:
+                severity = "fatal error";
+                break;
+            case CXDiagnostic_Error:
+                severity = "error";
+                found_error = true;
+                break;
+            case CXDiagnostic_Warning:
+                severity = "warning";
+                break;
+            case CXDiagnostic_Note:
+                severity = "note";
+                break;
+            default:
+                assertion_failure("unknown CXDiagnosticSeverity");
+                break;
             }
 
-            auto text = clang_formatDiagnostic(diag, CXDiagnostic_DisplaySourceLocation);
+            auto text = clang_formatDiagnostic(
+                diag, CXDiagnostic_DisplaySourceLocation);
             std::cerr << "iig: " << severity << ": " << text << std::endl;
             clang_disposeString(text);
 
@@ -109,10 +124,12 @@ int main(int argc, const char * argv[]) {
             clang_disposeDiagnostic(diag);
         }
 
-        if (found_error) exit(1);
+        if (found_error)
+            exit(1);
     }
 
-    std::cerr << "iig: fatal error: iig is not implemented at this time." << std::endl;
+    std::cerr << "iig: fatal error: iig is not implemented at this time."
+              << std::endl;
     exitCode = -1;
 
     clang_disposeIndex(index);
